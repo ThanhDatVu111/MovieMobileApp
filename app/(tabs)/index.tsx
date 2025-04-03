@@ -13,9 +13,18 @@ import SearchBar from "@/components/SearchBar";
 import useFetch from "@/services/usefetch";
 import { fetchMovies } from "@/services/api";
 import MovieCard from "@/components/MovieCard";
+import { getTrendingMovies } from "@/services/appwrite";
+import TrendingCard from "@/components/TrendingCard";
 
 const Index = () => {
   const router = useRouter();
+
+  //fetching trending movies using useFetch hook (custom hook)
+  const {
+    data: trendingMovies,
+    loading: trendingLoading,
+    error: trendingError,
+  } = useFetch(getTrendingMovies);
 
   const {
     data: movies,
@@ -42,8 +51,8 @@ const Index = () => {
         <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
 
         {/* check if we can fetch the data or not */}
-        {moviesLoading ? (
-          //if the data is loading, show a loading spinner
+        {moviesLoading || trendingLoading ? (
+          //if the movies or trending movies data is loading, show a loading spinner
           <ActivityIndicator
             size="large"
             color="#0000ff"
@@ -60,6 +69,28 @@ const Index = () => {
               }}
               placeholder="Search for a movie"
             />
+            {/*&& — Render only if condition is true */}
+            {trendingMovies && (
+              <View className="mt-10">
+                <Text className="text-lg text-white font-bold mb-3">
+                 Here are the top movies
+                </Text>
+                <FlatList
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  className="mb-4 mt-3"
+                  data={trendingMovies}
+                  contentContainerStyle={{
+                    gap: 26,
+                  }}
+                  renderItem={({ item, index }) => (
+                    <TrendingCard movie={item} index={index} />
+                  )}
+                  keyExtractor={(item) => item.movie_id.toString()}
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                />
+              </View>
+            )}
             <Text className="text-lg text-white font-bold mt-5 mb-3">
               Latest Movies
             </Text>
