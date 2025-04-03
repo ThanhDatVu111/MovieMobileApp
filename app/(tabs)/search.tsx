@@ -6,7 +6,7 @@ import { icons } from "@/constants/icons";
 
 import useFetch from "@/services/usefetch";
 import { fetchMovies } from "@/services/api";
-//import { updateSearchCount } from "@/services/appwrite";
+import { updateSearchCount } from "@/services/appwrite";
 
 import SearchBar from "@/components/SearchBar";
 import MovieCard from "@/components/MovieCard";
@@ -29,7 +29,7 @@ const Search = () => {
     setSearchQuery(text);
   };
 
-  // useEffect is call when searchQuery changes.
+  // useEffect is call when searchQuery changes => dont need to use useFetch.
   // If there is a search query, it waits for 500ms after the user stops typing before calling loadMovies to fetch the movies.
   // If the search bar is empty, it clears out the results by calling reset()
   useEffect(() => {
@@ -37,6 +37,11 @@ const Search = () => {
       // ⏱ Code to run after delay 500ms
       if (searchQuery.trim()) {
         await loadMovies();
+        // movies?.length! > 0 ensures that the movies array is not empty.
+        //movies?.[0] ensures that the first movie exists and is valid.
+        if (movies?.length! > 0 && movies?.[0]) {
+          await updateSearchCount(searchQuery, movies[0]);
+        }
       } else {
         reset();
       }
@@ -100,7 +105,7 @@ const Search = () => {
               searchQuery.trim() &&
               movies?.length! > 0 && (
                 <Text className="text-xl text-white font-bold">
-                  Search Results for<Text className="text-accent">{searchQuery}</Text>
+                  Search Results for <Text className="text-accent">{searchQuery}</Text>
                 </Text>
               )}
           </>
