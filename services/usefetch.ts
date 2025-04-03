@@ -28,6 +28,8 @@ const useFetch = <T>(fetchFunction: () => Promise<T>, autoFetch = true) => {
     }
   };
 
+  //when the user clears the search bar, reset() is called to clear the data and error states.
+  //This is useful for resetting the state when the user starts a new search or when the component unmounts.
   const reset = () => {
     setData(null);
     setError(null);
