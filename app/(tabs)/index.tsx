@@ -22,6 +22,8 @@ const Index = () => {
     loading: moviesLoading,
     error: moviesError,
   } = useFetch(() => fetchMovies({ query: "" }));
+  //We did NOT pass a second parameter (autoFetch), so it defaults to true.
+  //This means the hook automatically calls fetchMovies() once when the component mounts. That's why movies load immediately.
 
   return (
     <View className="flex-1 bg-primary">
